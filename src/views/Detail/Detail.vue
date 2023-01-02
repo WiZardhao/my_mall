@@ -20,6 +20,7 @@
     </scroll>
     <back-top @click.native="backToTop" v-show="isShowBackTop" />
     <detail-bottom-bar @addCart="addCart" />
+    <toast :message="message" :is-show="show" />
   </div>
 </template>
 
@@ -38,6 +39,7 @@ import DetailBottomBar from "./childComponents/DetailBottomBar.vue";
 import Scroll from "components/common/scroll/Scroll";
 import BackTop from "components/content/backTop/BackTop.vue";
 import GoodsList from "components/content/goodsList/GoodsList.vue";
+import Toast from "components/common/toast/Toast";
 
 export default {
   components: {
@@ -52,6 +54,7 @@ export default {
     Scroll,
     GoodsList,
     BackTop,
+    Toast,
   },
   name: "Detail",
   data() {
@@ -69,7 +72,8 @@ export default {
       isShowBackTop: false,
       timer: null,
       currentY: 0,
-      product: {},
+      message: "",
+      show: false,
     };
   },
   created() {
@@ -134,13 +138,15 @@ export default {
       }
     },
     addCart() {
-      this.product.img = this.topImages[0];
-      this.product.titlle = this.goods.title;
-      this.product.desc = this.imgs.desc;
-      this.product.price = this.goods.nowPrice;
-      this.product.iid = this.iid;
-      this.$store.dispatch("addCart", this.product);
-      console.log(this.$store.state.cartList);
+      const product = {};
+      product.img = this.topImages[0];
+      product.title = this.goods.title;
+      product.desc = this.imgs.desc;
+      product.price = this.goods.realPrice;
+      product.iid = this.iid;
+      this.$store.dispatch("addCart", product).then((res) => {
+        this.$toast.show(res, 1500);
+      });
     },
     /* 网络请求方法 */
     netDetail() {
@@ -162,7 +168,6 @@ export default {
         if (data.rate.cRate !== 0) {
           this.commentInfo = data.rate.list[0];
         }
-        console.log(data);
       });
     },
     netRecommend() {

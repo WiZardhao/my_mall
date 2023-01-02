@@ -1,6 +1,6 @@
 export default {
   addCount(state, payload) {
-    state.cartList.find((item) => {
+    state.cartList.find((item, index) => {
       if (item.iid === payload.iid) {
         item.count += 1;
       }
