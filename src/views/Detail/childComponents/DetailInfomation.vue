@@ -1,5 +1,5 @@
 <template>
-  <div class="infomations">
+  <div class="infomations" v-if="Object.keys(informations).length !== 0">
     <div class="info-rules">
       <table class="rule-table">
         <tr v-for="item in informations.rule">

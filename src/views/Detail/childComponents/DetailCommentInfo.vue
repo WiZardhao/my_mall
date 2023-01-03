@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { DateFormat } from "@/utils";
+import { DateFormat } from "@/common/utils";
 export default {
   name: "DetailCommentInfo",
   props: {

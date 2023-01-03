@@ -18,7 +18,7 @@
       <detail-comment-info :commentInfo="commentInfo" ref="comment" />
       <goods-list :goods="recommends" ref="recommend" class="goodsList" />
     </scroll>
-    <back-top @click.native="backToTop" v-show="isShowBackTop" />
+    <back-top @click.native="backClick" v-show="isShowBack" />
     <detail-bottom-bar @addCart="addCart" />
     <toast :message="message" :is-show="show" />
   </div>
@@ -26,6 +26,7 @@
 
 <script>
 import { getDetail, Goods, Shop, ItemInfo, getRecommend } from "network/detail";
+import { backTopMixin } from "@/common/mixin";
 
 import DetailNavBar from "./childComponents/DetailNavBar.vue";
 import DetailSwiper from "./childComponents/DetailSwiper.vue";
@@ -42,6 +43,25 @@ import GoodsList from "components/content/goodsList/GoodsList.vue";
 import Toast from "components/common/toast/Toast";
 
 export default {
+  name: "Detail",
+  data() {
+    return {
+      iid: null,
+      topImages: [],
+      goods: {},
+      shop: {},
+      imgs: {},
+      informations: {},
+      commentInfo: {},
+      recommends: [],
+      itemImgLoad: [],
+      itemPosition: [0],
+      timer: null,
+      currentY: 0,
+      message: "",
+      show: false,
+    };
+  },
   components: {
     DetailNavBar,
     DetailSwiper,
@@ -56,39 +76,13 @@ export default {
     BackTop,
     Toast,
   },
-  name: "Detail",
-  data() {
-    return {
-      iid: null,
-      topImages: [],
-      goods: {},
-      shop: {},
-      imgs: {},
-      informations: {},
-      commentInfo: {},
-      recommends: [],
-      itemImgLoad: [],
-      itemPosition: [0],
-      isShowBackTop: false,
-      timer: null,
-      currentY: 0,
-      message: "",
-      show: false,
-    };
-  },
+  mixins: [backTopMixin],
   created() {
     this.iid = this.$route.query.iid;
     this.netDetail();
     this.netRecommend();
   },
   methods: {
-    backToTop() {
-      this.$refs.scroll.scrollTo(0, 0);
-      setTimeout(() => {
-        this.$refs.navBar.currentIndex = 0;
-      }, 500);
-    },
-
     imgLoad() {
       this.$refs.scroll.refresh();
     },
@@ -102,7 +96,7 @@ export default {
       this.itemPosition.push(detailHeight, commentHeight, recommendHeight);
     },
     scrollPosition(position) {
-      this.isShowBackTop = position.y < -1000;
+      this.isShowBack = position.y < -1000;
 
       this.currentY = -position.y;
 

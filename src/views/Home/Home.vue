@@ -14,7 +14,7 @@
     />
     <scroll
       class="content"
-      ref="homeScroll"
+      ref="scroll"
       :click="true"
       :pullUpLoad="true"
       @scroll="contentScroll"
@@ -40,6 +40,7 @@
 <script>
 //方法或类
 import { getMultiData, getGoodsData } from "network/home";
+import { backTopMixin } from "@/common/mixin";
 //公共组件
 import NavBar from "components/common/navBar/NavBar";
 import TabControl from "components/content/tabControl/TabControl";
@@ -63,12 +64,12 @@ export default {
         sell: { page: 0, list: [] },
       },
       currentType: "pop",
-      isShowBack: false,
       isFixed: false,
       tabOffsetTop: 0,
       saveY: 0,
     };
   },
+  mixins: [backTopMixin],
   components: {
     NavBar,
     HomeSwiper,
@@ -85,11 +86,11 @@ export default {
     },
   },
   activated() {
-    this.$refs.homeScroll.refresh();
-    this.$refs.homeScroll.scrollTo(0, this.saveY, 0);
+    this.$refs.scroll.refresh();
+    this.$refs.scroll.scrollTo(0, this.saveY, 0);
   },
   deactivated() {
-    this.saveY = this.$refs.homeScroll.getY();
+    this.saveY = this.$refs.scroll.getY();
   },
   created() {
     this.netMultiData();
@@ -113,9 +114,6 @@ export default {
       this.$refs.tabControl1.currentIndex = index;
       this.$refs.tabControl2.currentIndex = index;
     },
-    backClick() {
-      this.$refs.homeScroll.scrollTo(0, 0);
-    },
     contentScroll(position) {
       this.isShowBack = position.y < -1000;
       if (position.y < -this.tabOffsetTop) {
@@ -127,7 +125,7 @@ export default {
     loadMore() {
       this.netGoodsData(this.currentType);
       setTimeout(() => {
-        this.$refs.homeScroll.refresh();
+        this.$refs.scroll.refresh();
       }, 20);
     },
     swiperImgLoad() {
@@ -147,7 +145,7 @@ export default {
       getGoodsData(type, page).then((res) => {
         this.goods[type].list.push(...res.data.data.list);
         this.goods[type].page += 1;
-        this.$refs.homeScroll.finishPullUp();
+        this.$refs.scroll.finishPullUp();
       });
     },
   },

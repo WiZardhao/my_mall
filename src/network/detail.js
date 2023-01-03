@@ -43,6 +43,6 @@ export class ItemInfo {
   constructor(info, rule) {
     this.img = info.images ? info.images : "";
     this.set = info.set;
-    this.rule = rule.tables[0];
+    this.rule = rule ? rule.tables[0] : "";
   }
 }
